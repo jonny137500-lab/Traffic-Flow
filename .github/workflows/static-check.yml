@@ -9,14 +9,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - name: Check required web files
         run: |
           test -f index.html
           test -f style.css
           test -f game.js
+          test -f package.json
+          test -f tests/browser-test.mjs
       - name: Check JavaScript syntax
         run: node --check game.js
       - name: Check HTML references
         run: |
           grep -q 'href="style.css"' index.html
           grep -q 'src="game.js"' index.html
+      - name: Install Playwright
+        run: |
+          npm install
+          npx playwright install --with-deps chromium
+      - name: Browser smoke test
+        run: npm run test:browser
+      - name: Upload browser screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: traffic-flow-browser-test
+          path: test-results/traffic-flow.png
+          if-no-files-found: ignore
