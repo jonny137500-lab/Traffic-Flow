@@ -10,11 +10,14 @@
 <canvas id="game" aria-label="Traffic Flow game"></canvas>
 <div id="hud">
   <div class="title">TRAFFIC FLOW</div>
-  <div class="stats"><span id="score">0</span> <span id="status">READY</span></div>
+  <div class="stats"><span id="score">0</span><span id="status">READY</span></div>
+  <button id="driveTool" class="tool active" title="驾驶">▶</button>
+  <button id="roadTool" class="tool" title="修路">＋</button>
+  <button id="eraseTool" class="tool" title="拆路">−</button>
   <button id="pause">Ⅱ</button>
   <button id="reset">↻</button>
 </div>
-<div id="help">拖动道路节点连接道路 · 点击车辆/道路不会中断模拟</div>
+<div id="help">驾驶中 · 交通灯自动控制车辆</div>
 <script src="game.js"></script>
 </body>
 </html>
