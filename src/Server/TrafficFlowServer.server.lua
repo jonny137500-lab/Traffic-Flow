@@ -112,11 +112,13 @@ local function replan(v)
  local currentNode = v.path[v.segment]
  local goalNode = v.path[#v.path]
  if not currentNode or not goalNode then return false end
- local newPath = graph:findPath(currentNode, goalNode)
+ local anchor = graph:nearest(v.part.Position) or currentNode
+ local newPath = graph:findPath(anchor, goalNode)
  if newPath and #newPath >= 2 then
   v.path = newPath
   v.segment = 1
   v.t = 0
+  v.lastPosition = v.part.Position
   return true
  end
  return false
