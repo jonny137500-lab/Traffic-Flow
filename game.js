@@ -8,6 +8,7 @@ const statusEl = document.getElementById("status");
 let W = innerWidth, H = innerHeight, dpr = 1;
 let paused = false, score = 0, last = performance.now(), spawnT = 0, nextCarId = 0;
 let roadMode = false, removeMode = false;
+const junctionLocks = new Map();
 const nodes = [], edges = [], cars = [], houses = [], targets = [];
 const lights = new Map();
 const COLORS = ["#ff6b6b", "#58a6ff", "#ffd166", "#7ee787", "#c084fc", "#fb923c"];
@@ -118,6 +119,7 @@ function spawn() {
   const p = pathfind(h.node, t.node);
   if (!p || p.length < 2) return;
   const n = nodes[p[0]], next = nodes[p[1]];
+  if (cars.some(c => Math.hypot(c.x - n.x, c.y - n.y) < 38)) return;
   cars.push({
     id: ++nextCarId, color: h.color, path: p, seg: 0, t: 0,
     speed: 0, x: n.x, y: n.y,
@@ -140,13 +142,27 @@ function canEnterJunction(c, nextNode) {
 function frontCar(c) {
   let closest = null, best = Infinity;
   for (const o of cars) {
-    if (o === c || o.done) continue;
+    if (o === c || o.done || o.path[o.seg] !== c.path[c.seg] || o.path[o.seg + 1] !== c.path[c.seg + 1]) continue;
     const dx = o.x - c.x, dy = o.y - c.y;
     const ahead = dx * Math.cos(c.angle) + dy * Math.sin(c.angle);
     const side = Math.abs(-dx * Math.sin(c.angle) + dy * Math.cos(c.angle));
     if (ahead > 0 && ahead < 80 && side < 15 && ahead < best) { best = ahead; closest = o; }
   }
   return { car: closest, distance: best };
+}
+function junctionAvailable(nodeId, carId) {
+  const owner = junctionLocks.get(nodeId);
+  return owner == null || owner === carId;
+}
+function reserveJunction(c, nodeId) {
+  if (nodeId == null || junctionAvailable(nodeId, c.id)) {
+    if (nodeId != null) junctionLocks.set(nodeId, c.id);
+    return true;
+  }
+  return false;
+}
+function releaseJunction(c) {
+  for (const [nodeId, owner] of junctionLocks) if (owner === c.id) junctionLocks.delete(nodeId);
 }
 function update(dt) {
   updateLights(dt);
@@ -169,6 +185,9 @@ function update(dt) {
     if (c.path[c.seg + 2] != null && remaining < 62 && !canEnterJunction(c, junction)) {
       desired = 0;
     }
+    if (c.path[c.seg + 2] != null && remaining < 38 && !reserveJunction(c, junction)) {
+      desired = 0;
+    }
 
     // Keep a hard minimum gap on the same road direction.
     const { car: lead, distance } = frontCar(c);
@@ -179,12 +198,19 @@ function update(dt) {
     c.t += c.speed * step / edgeLen;
 
     if (c.t >= 1) {
-      c.t = 0;
-      c.seg++;
-      if (c.seg >= c.path.length - 1) {
-        c.done = true;
-        score += 100;
-        continue;
+      const nextNode = c.path[c.seg + 1];
+      if (c.path[c.seg + 2] != null && !reserveJunction(c, nextNode)) {
+        c.t = 0.985;
+        c.speed = 0;
+      } else {
+        c.t = 0;
+        c.seg++;
+        if (c.seg >= c.path.length - 1) {
+          c.done = true;
+          releaseJunction(c);
+          score += 100;
+          continue;
+        }
       }
     }
 
@@ -265,13 +291,14 @@ function loop(now) {
   draw(); requestAnimationFrame(loop);
 }
 
-// Road editing: drag from one junction to another to create a road; right-click/secondary tap removes a road.
-let dragNode = null;
+// Road editing: drag between junctions to add/remove roads.
+let dragNode = null, pointerX = 0, pointerY = 0;
 function hitNode(x, y) {
   let best = null, d = 22;
   for (const n of nodes) { const dd = Math.hypot(n.x - x, n.y - y); if (dd < d) { d = dd; best = n; } }
   return best;
 }
+canvas.addEventListener("pointermove", e => { pointerX = e.clientX; pointerY = e.clientY; });
 canvas.addEventListener("pointerdown", e => {
   if (!roadMode) return;
   const n = hitNode(e.clientX, e.clientY);
@@ -290,8 +317,6 @@ canvas.addEventListener("pointerup", e => {
 });
 canvas.addEventListener("contextmenu", e => {
   e.preventDefault();
-  const n = hitNode(e.clientX, e.clientY);
-  if (!n) return;
   let best = null, bd = 28;
   for (const edge of edges) {
     const a = nodes[edge.a], b = nodes[edge.b], vx = b.x - a.x, vy = b.y - a.y;
@@ -302,11 +327,27 @@ canvas.addEventListener("contextmenu", e => {
   if (best) edges.splice(edges.indexOf(best), 1);
 });
 
+function setTool(mode) {
+  roadMode = mode !== "drive";
+  removeMode = mode === "erase";
+  document.querySelectorAll(".tool").forEach(b => b.classList.remove("active"));
+  document.getElementById(mode === "drive" ? "driveTool" : mode === "road" ? "roadTool" : "eraseTool").classList.add("active");
+  canvas.style.cursor = roadMode ? "crosshair" : "default";
+  document.getElementById("help").textContent =
+    mode === "road" ? "修路中 · 从一个路口拖到另一个路口" :
+    mode === "erase" ? "拆路中 · 从一个路口拖到另一个路口，或右键道路" :
+    "驾驶中 · 交通灯自动控制车辆";
+}
+document.getElementById("driveTool").onclick = () => setTool("drive");
+document.getElementById("roadTool").onclick = () => setTool("road");
+document.getElementById("eraseTool").onclick = () => setTool("erase");
+
 document.getElementById("pause").onclick = () => paused = !paused;
 document.getElementById("reset").onclick = () => {
-  cars.length = 0; score = 0; spawnT = 0;
+  cars.length = 0; score = 0; spawnT = 0; junctionLocks.clear();
   for (const l of lights.values()) l.phase = Math.random() * l.cycle;
 };
 resize();
-for (let i = 0; i < 8; i++) spawn();
+for (let i = 0; i < 3; i++) spawn();
+window.__trafficFlowDebug = () => ({cars:cars.length, score, paused, edges:edges.length, lights:[...lights].map(([id,l])=>({id,phase:l.phase})), nodes:nodes.map(n=>({id:n.id,x:n.x,y:n.y}))});
 requestAnimationFrame(loop);
