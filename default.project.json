@@ -1,0 +1,27 @@
+{
+  "name": "TrafficFlow",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "Shared": {
+        "$path": "src/Shared"
+      }
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "TrafficFlowServer": {
+        "$path": "src/Server/TrafficFlowServer.server.lua"
+      }
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "TrafficFlowClient": {
+          "$path": "src/Client/TrafficFlowClient.client.lua"
+        }
+      }
+    }
+  }
+}
