@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Traffic Flow</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="game" aria-label="Traffic Flow game"></canvas>
+<div id="hud">
+  <div class="title">TRAFFIC FLOW</div>
+  <div class="stats"><span id="score">0</span> <span id="status">READY</span></div>
+  <button id="pause">Ⅱ</button>
+  <button id="reset">↻</button>
+</div>
+<div id="help">拖动道路节点连接道路 · 点击车辆/道路不会中断模拟</div>
+<script src="game.js"></script>
+</body>
+</html>
