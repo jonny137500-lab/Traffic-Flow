@@ -1,0 +1,23 @@
+{
+  "name": "TrafficFlow",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Shared": {
+        "$path": "src/shared"
+      }
+    },
+    "ServerScriptService": {
+      "TrafficFlow": {
+        "$path": "src/server"
+      }
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "TrafficFlow": {
+          "$path": "src/client"
+        }
+      }
+    }
+  }
+}
