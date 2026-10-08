@@ -164,6 +164,11 @@ function reserveJunction(c, nodeId) {
 function releaseJunction(c) {
   for (const [nodeId, owner] of junctionLocks) if (owner === c.id) junctionLocks.delete(nodeId);
 }
+function releaseJunctionsBehind(c) {
+  for (const [nodeId, owner] of junctionLocks) {
+    if (owner === c.id && c.path[c.seg] === nodeId && c.t > 0.32) junctionLocks.delete(nodeId);
+  }
+}
 function update(dt) {
   updateLights(dt);
   spawnT += dt;
@@ -196,6 +201,7 @@ function update(dt) {
     const acc = desired > c.speed ? 260 : -420;
     c.speed = Math.max(0, Math.min(desired, c.speed + acc * step));
     c.t += c.speed * step / edgeLen;
+    releaseJunctionsBehind(c);
 
     if (c.t >= 1) {
       const nextNode = c.path[c.seg + 1];
