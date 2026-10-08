@@ -1,0 +1,24 @@
+name: Static checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  project:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate project files
+        run: |
+          test -f default.project.json
+          test -f src/Shared/Config.lua
+          test -f src/Shared/RoadGraph.lua
+          test -f src/Server/TrafficFlowServer.server.lua
+          test -f src/Client/TrafficFlowClient.client.lua
+          python3 - <<'PY'
+          import json
+          with open("default.project.json", encoding="utf-8") as f:
+              json.load(f)
+          print("Rojo project JSON: OK")
+          PY
