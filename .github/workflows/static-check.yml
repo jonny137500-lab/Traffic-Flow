@@ -1,24 +1,22 @@
-name: Static checks
+name: Web checks
 
 on:
   push:
   pull_request:
 
 jobs:
-  project:
+  web:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate project files
+      - name: Check required web files
         run: |
-          test -f default.project.json
-          test -f src/Shared/Config.lua
-          test -f src/Shared/RoadGraph.lua
-          test -f src/Server/TrafficFlowServer.server.lua
-          test -f src/Client/TrafficFlowClient.client.lua
-          python3 - <<'PY'
-          import json
-          with open("default.project.json", encoding="utf-8") as f:
-              json.load(f)
-          print("Rojo project JSON: OK")
-          PY
+          test -f index.html
+          test -f style.css
+          test -f game.js
+      - name: Check JavaScript syntax
+        run: node --check game.js
+      - name: Check HTML references
+        run: |
+          grep -q 'href="style.css"' index.html
+          grep -q 'src="game.js"' index.html
