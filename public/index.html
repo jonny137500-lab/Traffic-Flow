@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Traffic Flow</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="game" aria-label="Traffic Flow game"></canvas>
+<div id="hud">
+  <div class="title">TRAFFIC FLOW</div>
+  <div class="stats"><span id="score">0</span><span id="status">READY</span></div>
+  <button id="driveTool" class="tool active" title="驾驶">▶</button>
+  <button id="roadTool" class="tool" title="修路">＋</button>
+  <button id="eraseTool" class="tool" title="拆路">−</button>
+  <button id="pause">Ⅱ</button>
+  <button id="reset">↻</button>
+</div>
+<div id="help">驾驶中 · 交通灯自动控制车辆</div>
+<script src="game.js"></script>
+</body>
+</html>
