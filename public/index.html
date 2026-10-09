@@ -12,7 +12,7 @@
   <header class="topbar">
     <div class="brand"><span class="brand-mark">↗</span><div><b>TRAFFIC FLOW</b><small>CITY TRANSPORT AUTHORITY</small></div></div>
     <div class="top-stats"><div><small>WEEK</small><strong id="week">01</strong></div><div><small>DELIVERIES</small><strong id="score">0</strong></div><div><small>TRAFFIC</small><strong id="traffic">0%</strong></div></div>
-    <div class="top-actions"><button id="speed" class="small-btn">▶ 1×</button><button id="pause" class="small-btn">Ⅱ</button><button id="restart" class="small-btn">↻</button></div>
+    <div class="top-actions"><button id="speed" class="small-btn">▶ 1×</button><button id="pause" class="small-btn">Ⅱ</button><button id="shopButton" class="small-btn shop-button" title="Shop">▣</button><button id="restart" class="small-btn">↻</button></div>
   </header>
   <section class="workspace">
     <aside class="left-panel">
@@ -32,6 +32,7 @@
       <div class="map-label"><span class="live-dot"></span><span id="mapName">GREENFIELD · MAP 01</span><span class="map-sep">/</span><span id="mapStatus">LIVE SIMULATION</span></div>
       <div id="toast" class="toast">Connect homes to destinations of the same colour</div>
       <div class="map-controls"><button id="zoomOut">−</button><span id="zoomText">100%</span><button id="zoomIn">＋</button><button id="centerMap">⌖</button></div>
+      <div id="shopModal" class="modal hidden"><div class="modal-card shop-card"><div class="modal-kicker">CITY INFRASTRUCTURE</div><h2>Build shop</h2><p>New infrastructure unlocks automatically as your city grows. Unlocked items can then be purchased with credits.</p><div class="shop-balance">Available funds <b><span id="shopBudget">120</span> credits</b></div><div id="shopItems" class="shop-items"></div><button id="closeShop" class="shop-close">Back to city</button></div></div>
       <div id="upgradeModal" class="modal hidden"><div class="modal-card"><div class="modal-kicker">WEEK COMPLETE</div><h2>Choose an upgrade</h2><p>Improve your network before traffic increases.</p><div class="upgrade-options">
         <button class="upgrade" data-upgrade="budget"><span>＋</span><b>Road funding</b><small>Gain 45 road tiles</small></button>
         <button class="upgrade" data-upgrade="speed"><span>↗</span><b>Express delivery</b><small>Vehicles travel 15% faster</small></button>
