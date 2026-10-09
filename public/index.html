@@ -24,8 +24,9 @@
       <button class="tool" data-tool="roundabout"><span class="tool-icon round-icon">⟳</span><span><b>Roundabout</b><small>Calm crossing traffic</small></span><kbd>4</kbd></button>
       <button class="tool" data-tool="bridge"><span class="tool-icon bridge-icon">▤</span><span><b>Bridge</b><small>Cross water and obstacles</small><kbd>5</kbd></button>
       <button class="tool" data-tool="tunnel"><span class="tool-icon tunnel-icon">⌒</span><span><b>Tunnel</b><small>Pass beneath terrain</small><kbd>6</kbd></button>
+      <button class="tool" data-tool="highway" title="Highway · 7"><span class="tool-icon highway-icon">═</span><span><b>Highway</b><small>Fast multi-lane road</small><kbd>7</kbd></button>
       <div class="panel-spacer"></div>
-      <div class="budget"><div><span>ROAD BUDGET</span><b id="budget">120</b></div><div class="budget-track"><i id="budgetFill"></i></div><small>Road tiles cost 1 · special builds cost more</small></div>
+      <div class="budget"><div><span>ROAD INVENTORY</span><b id="budget">120</b></div><div class="budget-track"><i id="budgetFill"></i></div><small>Roads · roundabouts · highways (shown together)</small></div>
       <div class="legend"><span><i class="dot home"></i>Homes</span><span><i class="dot destination"></i>Destinations</span><span><i class="dot car-dot"></i>Vehicles</span></div>
     </aside>
     <div class="map-wrap"><canvas id="game" aria-label="Interactive traffic city map"></canvas>
@@ -33,10 +34,10 @@
       <div id="toast" class="toast">Connect homes to destinations of the same colour</div>
       <div class="map-controls"><button id="zoomOut">−</button><span id="zoomText">100%</span><button id="zoomIn">＋</button><button id="centerMap">⌖</button></div>
       <div id="shopModal" class="modal hidden"><div class="modal-card shop-card"><div class="modal-kicker">CITY INFRASTRUCTURE</div><h2>Build shop</h2><p>New infrastructure unlocks automatically as your city grows. Unlocked items can then be purchased with credits.</p><div class="shop-balance">Available funds <b><span id="shopBudget">120</span> credits</b></div><div id="shopItems" class="shop-items"></div><button id="closeShop" class="shop-close">Back to city</button></div></div>
-      <div id="upgradeModal" class="modal hidden"><div class="modal-card"><div class="modal-kicker">WEEK COMPLETE</div><h2>Choose an upgrade</h2><p>Improve your network before traffic increases.</p><div class="upgrade-options">
-        <button class="upgrade" data-upgrade="budget"><span>＋</span><b>Road funding</b><small>Gain 45 road tiles</small></button>
-        <button class="upgrade" data-upgrade="speed"><span>↗</span><b>Express delivery</b><small>Vehicles travel 15% faster</small></button>
-        <button class="upgrade" data-upgrade="capacity"><span>▦</span><b>Smart routing</b><small>Reduce traffic pressure</small></button>
+      <div id="upgradeModal" class="modal hidden"><div class="modal-card"><div class="modal-kicker">WEEKLY REWARD</div><h2 id="upgradeTitle">Week complete</h2><p>Choose one reward. Each week ends with a new road-network supply drop.</p><div class="upgrade-options">
+        <button class="upgrade" data-upgrade="budget"><span>＋</span><b>Roads +30</b><small>Add 30 ordinary road segments</small></button>
+        <button class="upgrade" data-upgrade="roundabout"><span>⟳</span><b>Roundabouts +20</b><small>Add 20 roundabout placements</small></button>
+        <button class="upgrade" data-upgrade="highway"><span>═</span><b>Highways +10</b><small>Add 10 highway segments</small></button>
       </div></div></div>
     </div>
     <aside class="right-panel"><div class="panel-heading">CITY OVERVIEW <span class="pulse"></span></div>
