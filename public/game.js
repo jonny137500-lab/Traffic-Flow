@@ -116,7 +116,7 @@ $("zoomIn").onclick=()=>{cell=Math.min(55,cell+3);draw();$("zoomText").textConte
 $("zoomOut").onclick=()=>{cell=Math.max(20,cell-3);draw();$("zoomText").textContent=Math.round(cell/34*100)+"%";};
 $("centerMap").onclick=()=>{state.offsetX=(W-worldW)/2;state.offsetY=(H-worldH)/2;draw();};
 $("howTo").onclick=()=>showToast("1 Road: drag to draw. 2 Remove: tap roads. 3 Signal: tap a junction. Connect each home with the destination of the same colour.");
-document.querySelectorAll(".upgrade").forEach(b=>b.onclick=()=>{const u=b.dataset.upgrade;if(u==="budget")state.budget+=30;if(u==="roundabout")state.roundaboutStock+=20;if(u==="highway")state.highwayStock+=10;state.upgrade=false;$("upgradeModal").classList.add("hidden");updateHud();showToast("Weekly reward: "+b.querySelector("b").textContent);});
+document.querySelectorAll(".upgrade").forEach(b=>b.onclick=()=>{const u=b.dataset.upgrade;if(u==="budget")state.budget+=30;if(u==="roundabout"){state.roundaboutStock+=1;state.budget+=20;}if(u==="highway"){state.highwayStock+=1;state.budget+=10;}state.upgrade=false;$("upgradeModal").classList.add("hidden");updateHud();showToast("Weekly reward: "+b.querySelector("b").textContent);});
 function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;update(dt);draw();requestAnimationFrame(loop);}
 window.__trafficFlowDebug=()=>({week:state.week,roads:state.roads.length,cars:state.vehicles.length,homes:state.homes.length,connected:connectedCount(),score:state.score,budget:state.budget});
 new ResizeObserver(resize).observe(canvas);resize();updateHud();showToast("Connect homes to destinations of the same colour");requestAnimationFrame(loop);
