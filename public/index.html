@@ -3,21 +3,56 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Traffic Flow</title>
+<meta name="theme-color" content="#f4f0e4">
+<title>Traffic Flow — City Builder</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<canvas id="game" aria-label="Traffic Flow game"></canvas>
-<div id="hud">
-  <div class="title">TRAFFIC FLOW</div>
-  <div class="stats"><span id="score">0</span><span id="status">READY</span></div>
-  <button id="driveTool" class="tool active" title="驾驶">▶</button>
-  <button id="roadTool" class="tool" title="修路">＋</button>
-  <button id="eraseTool" class="tool" title="拆路">−</button>
-  <button id="pause">Ⅱ</button>
-  <button id="reset">↻</button>
-</div>
-<div id="help">驾驶中 · 交通灯自动控制车辆</div>
+<main id="app">
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">↗</span><div><b>TRAFFIC FLOW</b><small>CITY TRANSPORT AUTHORITY</small></div></div>
+    <div class="top-stats"><div><small>WEEK</small><strong id="week">01</strong></div><div><small>DELIVERIES</small><strong id="score">0</strong></div><div><small>TRAFFIC</small><strong id="traffic">0%</strong></div></div>
+    <div class="top-actions"><button id="speed" class="small-btn">▶ 1×</button><button id="pause" class="small-btn">Ⅱ</button><button id="restart" class="small-btn">↻</button></div>
+  </header>
+  <section class="workspace">
+    <aside class="left-panel">
+      <div class="panel-heading"><span>BUILD</span><span class="tiny-pill">CITY MODE</span></div>
+      <button class="tool selected" data-tool="road"><span class="tool-icon road-icon">━</span><span><b>Road</b><small>Draw and reshape roads</small></span><kbd>1</kbd></button>
+      <button class="tool" data-tool="erase"><span class="tool-icon erase-icon">⌫</span><span><b>Remove</b><small>Clear road segments</small></span><kbd>2</kbd></button>
+      <div class="section-label">INFRASTRUCTURE</div>
+      <button class="tool" data-tool="light"><span class="tool-icon light-icon">🚦</span><span><b>Traffic light</b><small>Manage busy junctions</small></span><kbd>3</kbd></button>
+      <button class="tool" data-tool="roundabout"><span class="tool-icon round-icon">⟳</span><span><b>Roundabout</b><small>Calm crossing traffic</small></span><kbd>4</kbd></button>
+      <button class="tool" data-tool="bridge"><span class="tool-icon bridge-icon">▤</span><span><b>Bridge</b><small>Cross water and obstacles</small><kbd>5</kbd></button>
+      <button class="tool" data-tool="tunnel"><span class="tool-icon tunnel-icon">⌒</span><span><b>Tunnel</b><small>Pass beneath terrain</small><kbd>6</kbd></button>
+      <div class="panel-spacer"></div>
+      <div class="budget"><div><span>ROAD BUDGET</span><b id="budget">120</b></div><div class="budget-track"><i id="budgetFill"></i></div><small>Road tiles cost 1 · special builds cost more</small></div>
+      <div class="legend"><span><i class="dot home"></i>Homes</span><span><i class="dot destination"></i>Destinations</span><span><i class="dot car-dot"></i>Vehicles</span></div>
+    </aside>
+    <div class="map-wrap"><canvas id="game" aria-label="Interactive traffic city map"></canvas>
+      <div class="map-label"><span class="live-dot"></span><span id="mapName">GREENFIELD · MAP 01</span><span class="map-sep">/</span><span id="mapStatus">LIVE SIMULATION</span></div>
+      <div id="toast" class="toast">Connect homes to destinations of the same colour</div>
+      <div class="map-controls"><button id="zoomOut">−</button><span id="zoomText">100%</span><button id="zoomIn">＋</button><button id="centerMap">⌖</button></div>
+      <div id="upgradeModal" class="modal hidden"><div class="modal-card"><div class="modal-kicker">WEEK COMPLETE</div><h2>Choose an upgrade</h2><p>Improve your network before traffic increases.</p><div class="upgrade-options">
+        <button class="upgrade" data-upgrade="budget"><span>＋</span><b>Road funding</b><small>Gain 45 road tiles</small></button>
+        <button class="upgrade" data-upgrade="speed"><span>↗</span><b>Express delivery</b><small>Vehicles travel 15% faster</small></button>
+        <button class="upgrade" data-upgrade="capacity"><span>▦</span><b>Smart routing</b><small>Reduce traffic pressure</small></button>
+      </div></div></div>
+    </div>
+    <aside class="right-panel"><div class="panel-heading">CITY OVERVIEW <span class="pulse"></span></div>
+      <div class="city-card"><div class="city-illustration"><span>⌂</span><span>▥</span><span>⌂</span></div><div><b>Greenfield</b><small>Suburban district</small></div><span class="weather">☀ 21°</span></div>
+      <div class="metric"><div><span>Active vehicles</span><b id="activeCars">0</b></div><div class="metric-track"><i id="carFill"></i></div></div>
+      <div class="metric"><div><span>Connected homes</span><b id="connected">0 / 4</b></div><div class="metric-track green"><i id="connectedFill"></i></div></div>
+      <div class="metric"><div><span>Traffic flow</span><b id="flowValue">Excellent</b></div><div class="metric-track blue"><i id="flowFill"></i></div></div>
+      <div class="divider"></div><div class="panel-heading">NETWORK STATUS</div>
+      <div class="status-row"><span><i class="status-dot green-dot"></i>Road network</span><b id="roadsCount">0 segments</b></div>
+      <div class="status-row"><span><i class="status-dot amber-dot"></i>Traffic signals</span><b id="lightsCount">0 active</b></div>
+      <div class="status-row"><span><i class="status-dot blue-dot"></i>Deliveries today</span><b id="deliveryCount">0</b></div>
+      <div class="tip"><span>✦</span><div><b>City planner tip</b><p id="tipText">Connect each coloured home to its matching destination. Avoid unnecessary intersections to keep traffic flowing.</p></div></div>
+      <button id="howTo" class="help-button">ⓘ &nbsp; How to play</button>
+    </aside>
+  </section>
+  <footer><span>TRAFFIC FLOW <i>•</i> BUILD A BETTER CITY</span><span id="hint">Select Road, then drag across the map to build.</span><span>LOCAL SESSION <i class="live-dot"></i></span></footer>
+</main>
 <script src="game.js"></script>
 </body>
 </html>
